@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>sendw</class>
+ <widget class="QDialog" name="sendw">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>520</width>
+    <height>429</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Send Template</string>
+  </property>
+  <layout class="QGridLayout" name="gridLayout">
+   <item row="0" column="0">
+    <widget class="QTableWidgetKey" name="tWStemplate">
+     <property name="alternatingRowColors">
+      <bool>false</bool>
+     </property>
+     <property name="selectionMode">
+      <enum>QAbstractItemView::SelectionMode::SingleSelection</enum>
+     </property>
+     <property name="selectionBehavior">
+      <enum>QAbstractItemView::SelectionBehavior::SelectRows</enum>
+     </property>
+     <property name="rowCount">
+      <number>1</number>
+     </property>
+     <attribute name="horizontalHeaderMinimumSectionSize">
+      <number>485</number>
+     </attribute>
+     <attribute name="horizontalHeaderDefaultSectionSize">
+      <number>485</number>
+     </attribute>
+     <row/>
+     <column>
+      <property name="text">
+       <string>Send sequence in HEX</string>
+      </property>
+      <property name="textAlignment">
+       <set>AlignLeading|AlignVCenter</set>
+      </property>
+     </column>
+     <item row="0" column="0">
+      <property name="text">
+       <string>33 04 00 04 00 06 35 DB</string>
+      </property>
+     </item>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <customwidgets>
+  <customwidget>
+   <class>QTableWidgetKey</class>
+   <extends>QTableWidget</extends>
+   <header location="global">qtablewidgetkey.h</header>
+  </customwidget>
+ </customwidgets>
+ <resources/>
+ <connections/>
+</ui>
