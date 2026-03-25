@@ -1,0 +1,79 @@
+name: Windows Release
+
+on: [push, pull_request]
+
+env:
+  QT_VERSION:   5.15.16
+  
+permissions:
+  contents: write  # rights to make releases and save it
+  
+jobs:
+  build:
+    runs-on:  windows-latest
+
+    steps:
+      # 1
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive   
+      # 2   
+      - name: Set up MinGW
+        uses: msys2/setup-msys2@v2
+        with:
+          install: >-
+            mingw-w64-x86_64-toolchain
+            mingw-w64-x86_64-cmake
+            mingw-w64-x86_64-ninja
+      # 3
+      - name: Install Python for aqtinstall
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.x'
+      # 4
+      - name: Install Qt
+        uses: jurplel/install-qt-action@v3
+        with:
+          version: ${{ env.QT_VERSION }}       
+          arch: 'win64_mingw'     
+          modules: 'qtSerialPort'        
+      # 5  
+      - name: Build project
+        shell: msys2 {0}
+        run: |
+          mkdir build
+          cd build
+          cmake .. -G "Ninja" -DCMAKE_BUILD_TYPE=Release
+          ninja
+      # 6
+      - name: Deploy Qt Dependencies (Optional)
+        shell: bash
+        run: |
+          mkdir release_dist
+          copy build/ComPortEx_G.exe release_dist/
+          windeployqt --release --no-translations release_dist/ComPortEx_G.exe
+      # 7    
+      - name: Zip Result
+        shell: pwsh
+        run: |
+          Compress-Archive -Path release_dist\* -DestinationPath "App_Build_${{ github.sha }}.zip"          
+      # 8
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: windows-build-${{ github.sha }} 
+          path: "*.zip"
+          retention-days: 5  # days before delete (to save tha space)
+      # 9
+      - name: Create Release and Upload Asset
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: latest        # Тег, который будет обновляться при каждом push
+          name: "Latest Build (${{ github.ref_name }})"
+          draft: false
+          prerelease: true        # Помечаем как пре-релиз, так как это автосборка
+          files: "*.zip"          # Загружаем все zip-файлы из корня
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}          
+          
