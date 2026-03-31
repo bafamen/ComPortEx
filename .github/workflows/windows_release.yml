@@ -57,7 +57,7 @@ jobs:
         shell: bash
         run: |
           mkdir release_dist
-          copy build/ComPortEx_G.exe release_dist/
+          cp build/ComPortEx_G.exe release_dist/
           windeployqt --release --no-translations release_dist/ComPortEx_G.exe
       # 7    
       - name: Zip Result
