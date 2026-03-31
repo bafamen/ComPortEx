@@ -36,15 +36,22 @@ jobs:
         uses: jurplel/install-qt-action@v3
         with:
           version: ${{ env.QT_VERSION }}       
-          arch: 'win64_mingw'     
+          arch: 'win64_mingw81'     
           modules: 'qtSerialPort'        
       # 5  
       - name: Build project
-        shell: msys2 {0}
+        shell: bash
         run: |
           mkdir build
           cd build
-          cmake .. -G "Ninja" -DCMAKE_BUILD_TYPE=Release
+          # add MinGW from Qt into PATH (important)
+          echo "$Qt/Tools/mingw810_64/bin" >> $GITHUB_PATH
+          export PATH="$Qt/Tools/mingw810_64/bin:$PATH"		            
+          # config CMake
+          cmake .. -G Ninja \
+            -DCMAKE_BUILD_TYPE=Release \
+            -DCMAKE_PREFIX_PATH="$Qt/lib/cmake"            
+          # build
           ninja
       # 6
       - name: Deploy Qt Dependencies (Optional)
