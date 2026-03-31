@@ -3,7 +3,7 @@ name: Windows Release
 on: [push, pull_request]
 
 env:
-  QT_VERSION:   5.15.16
+  QT_VERSION:   5.15.2
   
 permissions:
   contents: write  # rights to make releases and save it
