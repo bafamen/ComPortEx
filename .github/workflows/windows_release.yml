@@ -36,8 +36,7 @@ jobs:
         uses: jurplel/install-qt-action@v3
         with:
           version: ${{ env.QT_VERSION }}       
-          arch: 'win64_mingw81'     
-          modules: 'qtserialport'        
+          arch: 'win64_mingw81'           
       # 5  
       - name: Build project
         shell: bash
