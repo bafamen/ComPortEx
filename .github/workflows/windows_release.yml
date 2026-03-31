@@ -37,7 +37,7 @@ jobs:
         with:
           version: ${{ env.QT_VERSION }}       
           arch: 'win64_mingw81'     
-          modules: 'qtSerialPort'        
+          modules: 'qtserialport'        
       # 5  
       - name: Build project
         shell: bash
