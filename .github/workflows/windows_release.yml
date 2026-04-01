@@ -55,7 +55,7 @@ jobs:
     - name: Deploy
       shell: bash
       run: |
-        QT_PATH="${Qt}/${{ env.QT_VERSION }}/mingw81_64"
+        QT_PATH="${Qt5_Dir}"
         QT_ROOT="$(dirname "$(dirname "$QT_PATH")")"
 
         # Автоматически находим mingw папку
