@@ -39,7 +39,7 @@ jobs:
         mkdir build
         cd build
 
-        QT_PATH="$Qt/5.15.2/mingw81_64"
+        QT_PATH="$Qt/${{ env.QT_VERSION }}/mingw81_64"
 
         export PATH="$QT_PATH/bin:$PATH"
 
@@ -55,10 +55,14 @@ jobs:
     - name: Deploy
       shell: bash
       run: |
-        QT_PATH="$Qt5_Dir"
-        MINGW_PATH="/c/msys64/mingw64/bin"
+        QT_PATH="${Qt}/${{ env.QT_VERSION }}/mingw81_64"
+        QT_ROOT="$(dirname "$(dirname "$QT_PATH")")"
+
+        # Автоматически находим mingw папку
+        MINGW_PATH=$(ls -d "$QT_ROOT"/Tools/mingw*/bin | head -n 1)
 
         echo "QT_PATH=$QT_PATH"
+        echo "QT_ROOT=$QT_ROOT"
         echo "MINGW_PATH=$MINGW_PATH"
 
         mkdir -p release_dist
@@ -69,9 +73,7 @@ jobs:
           --release \
           --no-translations \
           --dir release_dist \
-          --plugindir "$QT_PATH/plugins" \
           release_dist/ComPortEx_G.exe
-
 
         # MinGW runtime (necessary)
         cp "$MINGW_PATH/libgcc_s_seh-1.dll" release_dist/
