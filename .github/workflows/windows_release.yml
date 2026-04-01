@@ -56,12 +56,9 @@ jobs:
       shell: bash
       run: |
         QT_PATH="$Qt5_Dir"
-        QT_ROOT="$(dirname "$(dirname "$QT_PATH")")"
+        MINGW_PATH="/c/msys64/mingw64/bin"
 
-        # Автоматически находим mingw папку
-        MINGW_PATH=$(ls -d "$QT_ROOT"/Tools/mingw*/bin | head -n 1)
-
-        echo "QT_ROOT=$QT_ROOT"
+        echo "QT_PATH=$QT_PATH"
         echo "MINGW_PATH=$MINGW_PATH"
 
         mkdir -p release_dist
