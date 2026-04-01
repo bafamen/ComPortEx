@@ -30,11 +30,7 @@ jobs:
       uses: jurplel/install-qt-action@v3
       with:
         version: ${{ env.QT_VERSION }}
-        arch: win64_mingw81
-        
-    - name: Install MinGW
-      run: |
-        choco install mingw -y        
+        arch: win64_mingw81          
 
     # 4. Build (Ninja + MinGW from Qt)
     - name: Build project
@@ -61,28 +57,38 @@ jobs:
       run: |
         QT_PATH="${Qt5_Dir}"
         QT_ROOT="$(dirname "$(dirname "$QT_PATH")")"
-
-        # Автоматически находим mingw папку
-        MINGW_PATH=$(ls -d "$QT_ROOT"/Tools/mingw*/bin | head -n 1)
-
+        
+        # MinGW is installed by install-qt-action, locate it correctly
+        MINGW_PATH=$(find "$QT_ROOT" -type d -name "mingw*" -path "*/bin" 2>/dev/null | head -n 1)
+        
+        # Fallback: if not found, try the standard Qt tools location
+        if [ -z "$MINGW_PATH" ]; then
+          MINGW_PATH=$(ls -d "$QT_ROOT"/Tools/mingw*/bin 2>/dev/null | head -n 1)
+        fi
+        
+        # Final fallback: use the mingw from Qt bin directory
+        if [ -z "$MINGW_PATH" ]; then
+          MINGW_PATH="$(dirname "$QT_PATH")/bin"
+        fi
+        
         echo "QT_PATH=$QT_PATH"
         echo "QT_ROOT=$QT_ROOT"
         echo "MINGW_PATH=$MINGW_PATH"
-
+        
         mkdir -p release_dist
         cp build/ComPortEx_G.exe release_dist/
-
-        # Qt deploy (full path)
+        
+        # Qt deploy
         "$QT_PATH/bin/windeployqt.exe" \
           --release \
           --no-translations \
           --dir release_dist \
           release_dist/ComPortEx_G.exe
-
-        # MinGW runtime (necessary)
-        cp "$MINGW_PATH/libgcc_s_seh-1.dll" release_dist/
-        cp "$MINGW_PATH/libstdc++-6.dll" release_dist/
-        cp "$MINGW_PATH/libwinpthread-1.dll" release_dist/
+        
+        # MinGW runtime (copy if they exist)
+        [ -f "$MINGW_PATH/libgcc_s_seh-1.dll" ] && cp "$MINGW_PATH/libgcc_s_seh-1.dll" release_dist/ || true
+        [ -f "$MINGW_PATH/libstdc++-6.dll" ] && cp "$MINGW_PATH/libstdc++-6.dll" release_dist/ || true
+        [ -f "$MINGW_PATH/libwinpthread-1.dll" ] && cp "$MINGW_PATH/libwinpthread-1.dll" release_dist/ || true
 
     # 6. make archive
     - name: Zip Result
