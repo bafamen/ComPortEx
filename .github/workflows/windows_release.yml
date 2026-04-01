@@ -55,8 +55,8 @@ jobs:
     - name: Deploy
       shell: bash
       run: |
-        QT_PATH="$Qt/5.15.2/mingw81_64"
-        MINGW_PATH="$Qt/Tools/mingw810_64/bin"
+        QT_PATH="$Qt5_Dir/5.15.2/mingw81_64"
+        MINGW_PATH="$Qt5_Dir/Tools/mingw810_64/bin"
 
         mkdir -p release_dist
         cp build/ComPortEx_G.exe release_dist/
