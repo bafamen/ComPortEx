@@ -58,11 +58,20 @@ jobs:
         run: |
           mkdir release_dist
           cp build/ComPortEx_G.exe release_dist/
-          # add path to qt bin for windeployqt
-          export PATH="$Qt/${{ env.QT_VERSION }}/mingw81_64/bin:$PATH"
+
+          QT_PATH="$Qt/${{ env.QT_VERSION }}/mingw81_64"      
+          export PATH="$QT_PATH/bin:$PATH"
           # debug
           which windeployqt
-          windeployqt --release --no-translations release_dist/ComPortEx_G.exe
+          
+          # explicit path qmake и plugins
+          "$QT_PATH/bin/windeployqt.exe" \
+            --release \
+            --no-translations \
+            --qmldir . \
+            --plugindir "$QT_PATH/plugins" \
+            --dir release_dist \
+            release_dist/ComPortEx_G.exe          
       # 7    
       - name: Zip Result
         shell: pwsh
