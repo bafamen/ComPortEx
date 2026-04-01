@@ -69,7 +69,9 @@ jobs:
           --release \
           --no-translations \
           --dir release_dist \
+          --plugindir "$QT_PATH/plugins" \
           release_dist/ComPortEx_G.exe
+
 
         # MinGW runtime (necessary)
         cp "$MINGW_PATH/libgcc_s_seh-1.dll" release_dist/
